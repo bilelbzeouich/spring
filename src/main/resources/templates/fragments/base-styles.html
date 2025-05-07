@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <style th:fragment="base-styles">
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #8b5cf6;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-primary: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(circle at 25% 10%, rgba(99, 102, 241, 0.1), transparent 20%),
+                              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1), transparent 20%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .section-header {
+            position: relative;
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            height: 4px;
+            width: 40%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            bottom: -8px;
+            left: 0;
+            border-radius: 10px;
+        }
+        
+        .btn {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger, .btn-outline-danger {
+            background-color: transparent;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #ef4444;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .alert-info {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .alert-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .alert-link:hover {
+            text-decoration: underline;
+        }
+        
+        .form-control, .form-select {
+            border-radius: var(--border-radius);
+            padding: 0.625rem 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</body>
+</html> 

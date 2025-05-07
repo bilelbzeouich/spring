@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <nav th:fragment="navbar(activePage)" class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/film/all}">
+                <i class="ri-film-line me-2"></i>Filmothèque
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'films' ? 'active' : ''}" 
+                           th:href="@{/film/all}">
+                            <i class="ri-movie-2-line me-1"></i> Films
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'acteurs' ? 'active' : ''}"
+                           th:href="@{/acteur/all}">
+                            <i class="ri-user-star-line me-1"></i> Acteurs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'categories' ? 'active' : ''}"
+                           th:href="@{/categorie/all}">
+                            <i class="ri-folder-line me-1"></i> Catégories
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:classappend="${activePage == 'dashboard' ? 'active' : ''}"
+                           th:href="@{/dashboard}">
+                            <i class="ri-dashboard-line me-1"></i> Mon Tableau de Bord
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- User Controls -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="avatar-circle me-2">
+                                <span class="avatar-initials" 
+                                     th:text="${#strings.toUpperCase(#strings.substring(#authentication.principal.username,0,1))}">U</span>
+                            </span>
+                            <span sec:authentication="principal.username">user@example.com</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/logout}">
+                                    <i class="ri-logout-box-line me-2"></i> Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/login}">
+                            <i class="ri-login-box-line me-1"></i> Connexion
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/registration}">
+                            <i class="ri-user-add-line me-1"></i> Inscription
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <style th:fragment="navbar-style">
+        .navbar {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04);
+            border-bottom: 1px solid rgba(231, 231, 231, 0.8);
+            padding: 0.75rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            margin: 0 0.25rem;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+        
+        .dropdown-menu {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            border: none;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .avatar-circle {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .avatar-initials {
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+    </style>
+</body>
+</html> 

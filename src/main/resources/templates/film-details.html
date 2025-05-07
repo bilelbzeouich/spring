@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${film.titre} + ' - Filmothèque'">Détails du Film</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #3b82f6;
+            --accent-color: #8b5cf6;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-primary: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(circle at 25% 10%, rgba(99, 102, 241, 0.1), transparent 20%),
+                              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1), transparent 20%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04);
+            border-bottom: 1px solid rgba(231, 231, 231, 0.8);
+            padding: 0.75rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            margin: 0 0.25rem;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+        
+        .btn {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-secondary {
+            color: var(--text-secondary);
+            border-color: #e2e8f0;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--text-secondary);
+            border-color: var(--text-secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            border-color: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .film-details {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .film-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgo8ZGVmcz4KICA8cGF0dGVybiBpZD0icGF0dGVybiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj4KICAgIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPgogIDwvcGF0dGVybj4KPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz4KPC9zdmc+');
+            opacity: 0.7;
+        }
+        
+        .film-details-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .film-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .film-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .film-details h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .film-year {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .film-category {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.4em 1em;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+        }
+        
+        .film-description {
+            margin-top: 1.5rem;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            font-weight: 300;
+        }
+        
+        .actor-card {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: none;
+        }
+        
+        .actor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-card-hover);
+        }
+        
+        .actor-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .actor-card:hover .actor-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .placeholder-image {
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 450px;
+            color: var(--text-secondary);
+            font-size: 5rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        
+        .placeholder-image:hover {
+            color: var(--primary-color);
+        }
+        
+        .section-header {
+            position: relative;
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            height: 4px;
+            width: 40%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            bottom: -8px;
+            left: 0;
+            border-radius: 10px;
+        }
+        
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .alert-info {
+            border-left: 4px solid var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="ri-film-line me-2"></i>Filmothèque
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/film/all}">
+                        <i class="ri-movie-2-line me-1"></i> Films
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/acteur/all}">
+                        <i class="ri-user-star-line me-1"></i> Acteurs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorie/all}">
+                        <i class="ri-folder-line me-1"></i> Catégories
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="mb-4">
+        <a th:href="@{/film/all}" class="btn btn-outline-secondary">
+            <i class="ri-arrow-left-line me-1"></i> Retour à la liste
+        </a>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div th:if="${film.imagePath != null && film.imagePath != ''}" class="mb-4">
+                <img th:src="@{'/uploads/' + ${film.imagePath}}" class="film-image" th:alt="${film.titre}">
+            </div>
+            <div th:if="${film.imagePath == null || film.imagePath == ''}" class="placeholder-image mb-4">
+                <i class="ri-movie-2-line"></i>
+            </div>
+            
+            <div class="d-grid gap-2 mt-4">
+                <a th:href="@{'/film/edit/' + ${film.id}}" class="btn btn-primary">
+                    <i class="ri-edit-box-line me-1"></i> Modifier ce film
+                </a>
+                <a th:href="@{'/film/delete/' + ${film.id}}" class="btn btn-danger"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce film?')">
+                    <i class="ri-delete-bin-line me-1"></i> Supprimer ce film
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="film-details p-4">
+                <div class="film-details-content">
+                    <h1 class="display-5" th:text="${film.titre}">Titre du film</h1>
+                    <div class="film-year">
+                        <i class="ri-calendar-line me-1"></i> <span th:text="${film.anneeparution}">2021</span>
+                    </div>
+                    <div class="film-category" th:text="${film.categorie.nom}">Catégorie</div>
+                    <div class="film-description" th:text="${film.description}">Description du film</div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h3 class="section-header"><i class="ri-team-line me-2"></i>Acteurs</h3>
+                <div th:if="${film.acteurs.isEmpty()}" class="alert alert-info">
+                    <i class="ri-information-line me-2"></i> Aucun acteur associé à ce film.
+                </div>
+                <div class="row g-3" th:unless="${film.acteurs.isEmpty()}">
+                    <div class="col-md-6 col-lg-4" th:each="acteur : ${film.acteurs}">
+                        <div class="actor-card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="actor-icon me-3">
+                                    <i class="ri-user-3-fill"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0 fw-semibold" th:text="${acteur.prenom + ' ' + acteur.nom}">Nom de l'acteur</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
