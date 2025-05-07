@@ -6,177 +6,362 @@
     <title>Tableau de bord - Filmothèque</title>
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom Styles -->
     <style th:replace="fragments/base-styles :: base-styles"></style>
     <style th:replace="fragments/navbar :: navbar-style"></style>
     
     <style>
+        :root {
+            --card-border-radius: 16px;
+            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-secondary: linear-gradient(135deg, #60a5fa, #3b82f6);
+            --gradient-accent: linear-gradient(135deg, #f472b6, #ec4899);
+            --box-shadow-hover: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: #f9fafb;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .dashboard-wrapper {
+            padding-top: 2rem;
+            padding-bottom: 3rem;
+            position: relative;
+        }
+        
+        .dashboard-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 240px;
+            background: var(--gradient-primary);
+            z-index: -1;
+        }
+        
+        .welcome-header {
+            color: white;
+            margin-bottom: 2.5rem;
+        }
+        
+        .welcome-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        
+        .welcome-subtitle {
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
         .dashboard-card {
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(231, 231, 231, 0.8);
-            background-color: var(--bg-card);
-            transition: all 0.3s ease;
+            background-color: white;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
             height: 100%;
+            transition: all 0.3s ease;
+            border: none;
         }
         
         .dashboard-card:hover {
+            transform: translateY(-5px);
             box-shadow: var(--box-shadow-hover);
-            transform: translateY(-3px);
         }
         
-        .dashboard-card .card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.25rem 1.5rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
         }
         
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            color: white;
-            margin-bottom: 2rem;
-        }
-        
-        .stats-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+        .card-header-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             margin-right: 1rem;
         }
         
-        .stats-icon i {
-            font-size: 24px;
+        .films-card .card-header-icon {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .stats-card .card-header-icon {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+        
+        .stats-box {
+            border-radius: 12px;
+            background-color: #f9fafb;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-box:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .stats-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            color: white;
+        }
+        
+        .stats-films .stats-icon {
+            background: var(--gradient-primary);
+        }
+        
+        .stats-actors .stats-icon {
+            background: var(--gradient-secondary);
+        }
+        
+        .stats-categories .stats-icon {
+            background: var(--gradient-accent);
+        }
+        
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+        
+        .stats-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .film-item {
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .film-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .film-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .film-poster {
+            width: 60px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            margin-right: 1rem;
+        }
+        
+        .film-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .film-title {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .film-year {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .category-badge {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .explore-btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .explore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            color: white;
+        }
+        
+        .empty-films {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .empty-films i {
+            font-size: 3rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-films p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
 <body>
     <nav th:replace="fragments/navbar :: navbar('dashboard')"></nav>
     
-    <div class="container py-5">
-        <div class="welcome-banner">
-            <div class="d-flex align-items-center">
-                <div class="stats-icon">
-                    <i class="ri-user-line"></i>
-                </div>
-                <div>
-                    <h2 class="mb-0">Bienvenue, <span th:text="${#strings.capitalize(#authentication.principal.username)}">Utilisateur</span></h2>
-                    <p class="mb-0">Votre espace personnel de cinéphile</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row g-4">
-            <!-- Activity Overview -->
-            <div class="col-md-6">
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <i class="ri-movie-2-line me-2"></i> Films récents
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center p-4" th:if="${#lists.isEmpty(recentFilms)}">
-                            <i class="ri-film-line display-4 text-muted"></i>
-                            <p class="mt-3">Pas de films récents à afficher</p>
-                            <a th:href="@{/film/all}" class="btn btn-sm btn-primary mt-2">
-                                <i class="ri-movie-2-line me-1"></i> Explorer les films
-                            </a>
-                        </div>
-                        <div class="list-group list-group-flush" th:unless="${#lists.isEmpty(recentFilms)}">
-                            <a th:each="film : ${recentFilms}" 
-                               th:href="@{'/film/details/' + ${film.id}}"
-                               class="list-group-item list-group-item-action d-flex align-items-center border-0 py-3">
-                                <div class="flex-shrink-0 me-3">
-                                    <div class="rounded" style="width: 50px; height: 50px; overflow: hidden;">
-                                        <img th:if="${film.imagePath != null}" th:src="@{'/uploads/' + ${film.imagePath}}" 
-                                             class="img-fluid" alt="Poster">
-                                        <div th:unless="${film.imagePath != null}" 
-                                             class="bg-light d-flex align-items-center justify-content-center" 
-                                             style="width: 50px; height: 50px;">
-                                            <i class="ri-movie-2-line text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1" th:text="${film.titre}">Titre du film</h6>
-                                    <p class="small text-muted mb-0" th:text="${film.anneeparution}">2023</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <div class="dashboard-wrapper">
+        <div class="container">
+            <div class="welcome-header">
+                <h1 class="welcome-title">Bienvenue, <span th:text="${#strings.capitalize(#authentication.principal.username)}">Utilisateur</span></h1>
+                <p class="welcome-subtitle">Votre espace personnel de cinéphile</p>
             </div>
             
-            <!-- Collections Stats -->
-            <div class="col-md-6">
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <i class="ri-bar-chart-line me-2"></i> Statistiques
+            <div class="row g-4">
+                <!-- Films Card -->
+                <div class="col-lg-8">
+                    <div class="dashboard-card films-card">
+                        <div class="card-header">
+                            <div class="card-header-icon">
+                                <i class="ri-movie-2-line"></i>
+                            </div>
+                            <h5 class="mb-0">Films récents</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="empty-films" th:if="${#lists.isEmpty(recentFilms)}">
+                                <i class="ri-film-line"></i>
+                                <p>Pas de films récents à afficher</p>
+                                <a th:href="@{/film/all}" class="btn explore-btn">
+                                    <i class="ri-movie-2-line me-2"></i> Explorer les films
+                                </a>
+                            </div>
+                            
+                            <div th:unless="${#lists.isEmpty(recentFilms)}">
+                                <div th:each="film : ${recentFilms}" class="film-item">
+                                    <a th:href="@{'/film/details/' + ${film.id}}" class="d-flex align-items-center text-decoration-none">
+                                        <div class="film-poster">
+                                            <img th:if="${film.imagePath != null}" th:src="@{'/uploads/' + ${film.imagePath}}" alt="Poster">
+                                            <i th:unless="${film.imagePath != null}" class="ri-movie-2-line"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="film-title" th:text="${film.titre}">Titre du film</h6>
+                                            <div class="d-flex align-items-center">
+                                                <span class="film-year" th:text="${film.anneeparution}">2023</span>
+                                                <span class="mx-2">•</span>
+                                                <span class="category-badge" th:if="${film.categorie != null}" th:text="${film.categorie.nom}">Action</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <a th:href="@{/film/all}" class="btn explore-btn">
+                                        <i class="ri-arrow-right-line me-2"></i> Voir tous les films
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-                                <div class="p-3 border rounded">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
-                                                <i class="ri-film-line text-primary"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-0" th:text="${filmCount ?: 0}">0</h5>
-                                            <small class="text-muted">Films</small>
-                                        </div>
+                </div>
+                
+                <!-- Stats Card -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card stats-card">
+                        <div class="card-header">
+                            <div class="card-header-icon">
+                                <i class="ri-bar-chart-line"></i>
+                            </div>
+                            <h5 class="mb-0">Statistiques</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="stats-box stats-films mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon">
+                                        <i class="ri-film-line"></i>
+                                    </div>
+                                    <div>
+                                        <div class="stats-value" th:text="${filmCount ?: 0}">0</div>
+                                        <div class="stats-label">Films au total</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="p-3 border rounded">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="rounded-circle bg-success bg-opacity-10 p-2">
-                                                <i class="ri-user-star-line text-success"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-0" th:text="${actorCount ?: 0}">0</h5>
-                                            <small class="text-muted">Acteurs</small>
-                                        </div>
+                            
+                            <div class="stats-box stats-actors mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon">
+                                        <i class="ri-user-star-line"></i>
+                                    </div>
+                                    <div>
+                                        <div class="stats-value" th:text="${actorCount ?: 0}">0</div>
+                                        <div class="stats-label">Acteurs enregistrés</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="p-3 border rounded">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="rounded-circle bg-warning bg-opacity-10 p-2">
-                                                <i class="ri-folder-line text-warning"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h5 class="mb-0" th:text="${categoryCount ?: 0}">0</h5>
-                                            <small class="text-muted">Catégories</small>
-                                        </div>
+                            
+                            <div class="stats-box stats-categories">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon">
+                                        <i class="ri-folder-line"></i>
+                                    </div>
+                                    <div>
+                                        <div class="stats-value" th:text="${categoryCount ?: 0}">0</div>
+                                        <div class="stats-label">Catégories disponibles</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="p-3 border rounded">
-                                    <div class="d-flex justify-content-center">
-                                        <a th:href="@{/film/all}" class="btn btn-outline-primary">
-                                            <i class="ri-arrow-right-line me-1"></i> Explorer
-                                        </a>
-                                    </div>
-                                </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <a th:href="@{/acteur/all}" class="btn btn-outline-primary">
+                                    <i class="ri-user-star-line me-2"></i> Voir les acteurs
+                                </a>
+                                <a th:href="@{/categorie/all}" class="btn btn-outline-primary">
+                                    <i class="ri-folder-line me-2"></i> Voir les catégories
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -186,6 +371,6 @@
     </div>
     
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 
